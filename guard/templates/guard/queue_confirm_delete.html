@@ -1,0 +1,17 @@
+{% extends "guard/base.html" %}
+
+{% block title %}削除確認{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>削除確認</h1>
+
+    <p>「{{ item.title }}」を削除しますか？</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button class="btn btn-danger" type="submit">削除する</button>
+        <a class="btn btn-secondary" href="{% url 'queue_detail' item.pk %}">戻る</a>
+    </form>
+</div>
+{% endblock %}

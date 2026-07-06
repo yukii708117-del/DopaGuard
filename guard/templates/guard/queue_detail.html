@@ -1,0 +1,37 @@
+{% extends "guard/base.html" %}
+
+{% block title %}キュー詳細{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>{{ item.title }}</h1>
+
+    {% if item.is_released %}
+        <p class="status-release">解放済み</p>
+    {% else %}
+        <p class="status-lock">ロック中</p>
+    {% endif %}
+
+    <p><strong>カテゴリ：</strong>{{ item.get_category_display }}</p>
+    <p><strong>解放日時：</strong>{{ item.release_at }}</p>
+
+    <p><strong>URL：</strong></p>
+    {% if item.is_released %}
+        <p>
+            <a href="{{ item.url }}" target="_blank" rel="noopener">
+                {{ item.url }}
+            </a>
+        </p>
+    {% else %}
+        <p>{{ item.url }}</p>
+        <p class="status-lock">解放時刻になるまでクリックできません。</p>
+    {% endif %}
+
+    <p><strong>メモ：</strong></p>
+    <p>{{ item.memo|linebreaksbr }}</p>
+
+    <a class="btn" href="{% url 'queue_edit' item.pk %}">編集</a>
+    <a class="btn btn-danger" href="{% url 'queue_delete' item.pk %}">削除</a>
+    <a class="btn btn-secondary" href="{% url 'queue_list' %}">一覧に戻る</a>
+</div>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "guard/base.html" %}
+
+{% block title %}キュー一覧{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>後で読むキュー一覧</h1>
+
+    <a class="btn" href="{% url 'queue_create' %}">URLを登録する</a>
+    <a class="btn btn-secondary" href="{% url 'home' %}">TOPへ戻る</a>
+
+    <form method="get" style="margin-top: 16px;">
+        <label>カテゴリで絞り込み：</label>
+        <select name="category">
+            <option value="">すべて</option>
+            {% for value, label in category_choices %}
+                <option value="{{ value }}" {% if selected_category == value %}selected{% endif %}>
+                    {{ label }}
+                </option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-secondary" type="submit">表示</button>
+    </form>
+</div>
+
+<div class="card">
+    {% if items %}
+        <table>
+            <thead>
+            <tr>
+                <th>カテゴリ</th>
+                <th>タイトル</th>
+                <th>状態</th>
+                <th>URL</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in items %}
+                <tr>
+                    <td>{{ item.get_category_display }}</td>
+                    <td>
+                        <a href="{% url 'queue_detail' item.pk %}">
+                            {{ item.title }}
+                        </a>
+                    </td>
+                    <td>
+                        {% if item.is_released %}
+                            <span class="status-release">解放済み</span>
+                        {% else %}
+                            <span class="status-lock">ロック中</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if item.is_released %}
+                            <a href="{{ item.url }}" target="_blank" rel="noopener">
+                                開く
+                            </a>
+                        {% else %}
+                            <span class="status-lock">ロック中</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>登録されたURLはありません。</p>
+    {% endif %}
+</div>
+{% endblock %}
