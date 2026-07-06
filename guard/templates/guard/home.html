@@ -1,0 +1,23 @@
+{% extends "guard/base.html" %}
+
+{% block title %}DopaGuard TOP{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>DopaGuardへようこそ</h1>
+
+    <p>
+        DopaGuardは、今すぐ見たくなったURLを一度キューに保存し、
+        決めた解放時刻を過ぎるまで開けないようにするWebサイトです。
+    </p>
+
+    {% if user.is_authenticated %}
+        <p>ログイン中です。</p>
+        <p>URLキュー機能はB担当の実装後に利用できます。</p>
+    {% else %}
+        <p>利用するにはログインまたは会員登録をしてください。</p>
+        <a class="btn" href="{% url 'login' %}">ログイン</a>
+        <a class="btn btn-secondary" href="{% url 'signup' %}">会員登録</a>
+    {% endif %}
+</div>
+{% endblock %}
