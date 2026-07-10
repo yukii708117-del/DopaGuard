@@ -2,95 +2,320 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+
+    <!-- スマホの画面幅を正しく認識させる重要な設定 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>{% block title %}DopaGuard{% endblock %}</title>
+
     <style>
+        /* 余白を含めて幅を計算する */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            -webkit-text-size-adjust: 100%;
+        }
+
         body {
-            font-family: sans-serif;
             margin: 0;
+            min-width: 0;
             background: #f5f5f5;
             color: #222;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                "Noto Sans JP",
+                sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
         }
 
         header {
             background: #222;
             color: white;
-            padding: 12px 24px;
+            padding: 12px 20px;
         }
 
         header a {
             color: white;
             text-decoration: none;
-            margin-right: 16px;
         }
 
         .nav {
             display: flex;
-            justify-content: space-between;
+            max-width: 960px;
+            margin: 0 auto;
             align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .brand {
+            flex-shrink: 0;
+            font-size: 18px;
+        }
+
+        .nav-actions {
+            display: flex;
+            min-width: 0;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 8px 12px;
+        }
+
+        .username {
+            overflow-wrap: anywhere;
         }
 
         .container {
+            width: 100%;
             max-width: 960px;
             margin: 24px auto;
             padding: 0 16px;
         }
 
         .card {
-            background: white;
-            padding: 24px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
+            width: 100%;
             margin-bottom: 20px;
+            padding: 24px;
+            overflow: hidden;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
+        h1,
+        h2,
+        h3 {
+            margin-top: 0;
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+        }
+
+        h1 {
+            font-size: clamp(24px, 5vw, 32px);
+        }
+
+        h2 {
+            font-size: clamp(20px, 4vw, 26px);
+        }
+
+        p {
+            overflow-wrap: anywhere;
         }
 
         .btn {
-            display: inline-block;
-            padding: 8px 14px;
+            display: inline-flex;
+            min-height: 44px;
             margin: 4px 4px 4px 0;
+            padding: 10px 16px;
+            align-items: center;
+            justify-content: center;
             background: #0d6efd;
             color: white;
-            text-decoration: none;
-            border-radius: 4px;
             border: none;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 16px;
+            line-height: 1.2;
+            text-align: center;
+            text-decoration: none;
             cursor: pointer;
-            font-size: 14px;
+        }
+
+        .btn:hover {
+            background: #0b5ed7;
         }
 
         .btn-secondary {
             background: #6c757d;
         }
 
-        .message {
-            padding: 10px;
-            background: #e7f3ff;
-            border: 1px solid #9ec5fe;
-            margin-bottom: 12px;
-            border-radius: 4px;
+        .btn-secondary:hover {
+            background: #5c636a;
         }
 
-        .error {
+        .message {
+            width: 100%;
+            margin-bottom: 12px;
+            padding: 12px 14px;
+            overflow-wrap: anywhere;
+            background: #e7f3ff;
+            border: 1px solid #9ec5fe;
+            border-radius: 6px;
+        }
+
+        .error,
+        .errorlist {
             color: #dc3545;
             font-weight: bold;
         }
 
+        .errorlist {
+            padding-left: 20px;
+        }
+
         form.logout-form {
             display: inline;
+            margin: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="url"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        input[type="search"],
+        textarea {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            padding: 10px 12px;
+            background: white;
+            border: 1px solid #aaa;
+            border-radius: 6px;
+            font: inherit;
+            font-size: 16px;
+        }
+
+        select {
+            max-width: 100%;
+            min-height: 42px;
+            padding: 8px 10px;
+            background: white;
+            border: 1px solid #aaa;
+            border-radius: 6px;
+            font: inherit;
+            font-size: 16px;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* 一覧表 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th,
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        td,
+        td a {
+            overflow-wrap: anywhere;
+        }
+
+        /* キーボード操作時の選択位置 */
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #ffbf47;
+            outline-offset: 2px;
+        }
+
+        /* スマートフォン向け */
+        @media (max-width: 600px) {
+            header {
+                padding: 10px 12px;
+            }
+
+            .nav {
+                gap: 8px;
+            }
+
+            .nav-actions {
+                gap: 6px 8px;
+                font-size: 14px;
+            }
+
+            .container {
+                margin: 16px auto;
+                padding: 0 12px;
+            }
+
+            .card {
+                margin-bottom: 14px;
+                padding: 16px;
+            }
+
+            /* 横長の表は、画面からはみ出さず横スクロールさせる */
+            table {
+                display: block;
+                max-width: 100%;
+                overflow-x: auto;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            th,
+            td {
+                padding: 10px 8px;
+            }
+        }
+
+        /* 特に幅が狭いスマートフォン向け */
+        @media (max-width: 360px) {
+            .nav {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .nav-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
         }
     </style>
 </head>
+
 <body>
 <header>
     <div class="nav">
-        <div>
-            <a href="{% url 'home' %}"><strong>DopaGuard</strong></a>
+        <div class="brand">
+            <a href="{% url 'home' %}">
+                <strong>DopaGuard</strong>
+            </a>
         </div>
 
-        <div>
+        <div class="nav-actions">
             {% if user.is_authenticated %}
-                <span>{{ user.username }} さん</span>
-                <form class="logout-form" method="post" action="{% url 'logout' %}">
+                <span class="username">{{ user.username }} さん</span>
+
+                <form class="logout-form"
+                      method="post"
+                      action="{% url 'logout' %}">
                     {% csrf_token %}
-                    <button class="btn btn-secondary" type="submit">ログアウト</button>
+                    <button class="btn btn-secondary" type="submit">
+                        ログアウト
+                    </button>
                 </form>
             {% else %}
                 <a href="{% url 'login' %}">ログイン</a>
